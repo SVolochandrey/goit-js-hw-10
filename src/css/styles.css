@@ -30,7 +30,7 @@ flex-direction: column;
 gap: 6px;
 }
 
-.country-list__big {
+.country-list__deployed {
 font-size: 40px;
 font-weight: bold;
 margin: 16px 0;

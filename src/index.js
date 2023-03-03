@@ -1,16 +1,25 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import debounce from 'lodash.debounce';
-import { fetchCountries } from './js/countries';
+
+const fetchCountries = name => {
+return fetch(
+`https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`
+).then(response => {
+if(response.ok){
+return response.json()
+}
+});
+};
 
 const DEBOUNCE_DELAY = 300;
 const inputEl = document.querySelector('#search-box');
 const countriesListEl = document.querySelector('.country-list');
 const countryInfoEl = document.querySelector('.country-info');
 
-inputEl.addEventListener('input', debounce(onInputChange, DEBOUNCE_DELAY));
+inputEl.addEventListener('input', debounce(onInputSearch, DEBOUNCE_DELAY));
 
-function onInputChange(event){
+function onInputSearch(event){
 const findCountry = event.target.value.trim();
 
 if (!findCountry){
@@ -20,12 +29,12 @@ return;
 else {
 fetchCountries(findCountry)
 .then(countries => {
-countries.length > 10
-? Notiflix.Notify.info(
+if (countries.length > 10) {
+Notiflix.Notify.info(
 'Too many matches found. Please enter a more specific name.'
-)
-: onRenderCountryList(countries);
-})
+)}
+else {onRenderCountryList(countries);
+}})
 .catch(onFetchError);
 }
 }
@@ -34,7 +43,7 @@ function onRenderCountryList(countries) {
 dataCleaning();
 const markup = countries
 .map(
-country => `li class ="country-item">
+country => `<li class ="country-item">
 <img src="${country.flags.svg}" alt="${country.name.oficial}" width = "40px" heignt = "40px">
 </img> <span> ${country.name.official} </span>
 </li>`
@@ -43,7 +52,7 @@ country => `li class ="country-item">
 countriesListEl.innerHTML = markup;
 
 if (countries.length === 1){
-countriesListEl.classList.add('country-list__big');
+countriesListEl.classList.add('country-list__deployed');
 creatCountryInfo(countries)
 }
 }
@@ -63,6 +72,6 @@ Notiflix.Notify.failure('Oops, there is no country with that name');
 function dataCleaning(){
 countriesListEl.innerHTML = '';
 countryInfoEl.innerHTML = '';
-countriesListEl.classList.remove('country-list__big')
+countriesListEl.classList.remove('country-list__deployed')
 }
 
