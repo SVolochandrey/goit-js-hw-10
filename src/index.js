@@ -1,16 +1,8 @@
 import './css/styles.css';
 import Notiflix from 'notiflix';
 import debounce from 'lodash.debounce';
+import { fetchCountries } from './js/countreisFetch';
 
-const fetchCountries = name => {
-return fetch(
-`https://restcountries.com/v3.1/name/${name}?fields=name,capital,population,flags,languages`
-).then(response => {
-if(response.ok){
-return response.json()
-}
-});
-};
 
 const DEBOUNCE_DELAY = 300;
 const inputEl = document.querySelector('#search-box');
